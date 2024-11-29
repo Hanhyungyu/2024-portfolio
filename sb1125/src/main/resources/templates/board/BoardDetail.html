@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 상세</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+  <h1 class="mb-4" th:text="${board.title}">게시글 제목</h1>
+
+  <p><strong>작성자 ID:</strong> <span th:text="${board.memberId}">작성자 ID</span></p>
+  <p><strong>작성일:</strong> <span th:text="${board.createdDate}">작성일</span></p>
+  <p><strong>내용:</strong></p>
+  <p th:text="${board.content}"></p>
+
+  <!-- 수정, 삭제 버튼 (로그인된 사용자 및 작성자와 동일한 경우에만 표시) -->
+  <div th:if="${session.userId != null && session.userId == board.memberId}">
+    <a th:href="@{'/boards/edit/' + ${board.id}}" class="btn btn-warning">수정</a>
+    <a th:href="@{'/boards/delete/' + ${board.id}}" class="btn btn-danger" onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+  </div>
+
+  <a href="/boards" class="btn btn-secondary mt-3">목록으로 돌아가기</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도서관 웹사이트</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Font Awesome 아이콘 추가 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 메뉴 글씨 크기 키우기 */
+        .navbar-nav .nav-link {
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        /* 마우스 오버 시 하위 메뉴가 보이도록 */
+        .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* 네비게이션 바 및 기본 스타일 */
+        .navbar-brand {
+            font-size: 30px; /* 원하는 크기로 조정 */
+            font-weight: bold;
+        }
+
+        /* 로그인 버튼을 오른쪽 끝으로 고정 */
+        .navbar-nav .ms-auto {
+            margin-left: auto;
+        }
+
+        /* MyLibrary 기능 버튼 스타일 */
+        .mylibrary-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 50px;
+        }
+
+        .mylibrary-nav {
+            width: 200px; /* 버튼 너비 */
+            position: fixed;
+            top: 150px; /* 페이지 위쪽에서 떨어진 위치 */
+            left: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mylibrary-nav a {
+            text-decoration: none;
+            color: black;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .mylibrary-nav a:hover {
+            background-color: #f1f1f1;
+            border-color: #aaa;
+        }
+
+        /* 가운데 영역 */
+        .mylibrary-main {
+            margin-left: 240px; /* 왼쪽 메뉴가 차지하는 공간만큼 여백 */
+            padding: 20px;
+            width: calc(100% - 240px); /* 메뉴 공간을 제외한 전체 너비 */
+        }
+
+        /* 달력 스타일 */
+        .calendar {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f8f9fa;
+        }
+
+        td {
+            height: 60px;
+            vertical-align: middle;
+        }
+
+        .highlight {
+            background-color: #ffcc00; /* 강조할 날짜 색상 */
+            color: white;
+            font-weight: bold;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header .month-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0 20px;
+        }
+
+        .calendar-header button {
+            font-size: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        /* 로그인 버튼을 조금 더 크게 만들기 */
+        #loginBtn {
+            font-size: 40px; /* 글씨 크기 */
+            padding: 10px 20px; /* 버튼 여백 */
+            border-radius: 8px; /* 모서리 둥글기 */
+        }
+    </style>
+</head>
+<body>
+<!-- 네비게이션 바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/main">동서울대학교 도서관</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <!-- 소장자료 검색 메뉴 -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        소장자료 검색
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown1">
+                        <li><a class="dropdown-item" href="/deepSearch">통합검색</a></li>
+                        <li><a class="dropdown-item" href="/search">분류검색</a></li>
+                        <li><a class="dropdown-item" href="/search">신착도서</a></li>
+                    </ul>
+                </li>
+
+                <!-- 도서관 이용안내 메뉴 -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        도서관 이용안내
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                        <li><a class="dropdown-item" href="#">도서관 소개</a></li>
+                        <li><a class="dropdown-item" href="#">이용 안내</a></li>
+                        <li><a class="dropdown-item" href="#">시설안내</a></li>
+                    </ul>
+                </li>
+
+                <!-- Mylibrary 메뉴 -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown3" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Mylibrary
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown3">
+                        <li><a class="dropdown-item" href="#">마이 폴더</a></li>
+                        <li><a class="dropdown-item" href="#">대출현황</a></li>
+                        <li><a class="dropdown-item" href="#">연장</a></li>
+                        <li><a class="dropdown-item" href="#">예약</a></li>
+                    </ul>
+                </li>
+
+                <!-- 커뮤니티 메뉴 -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown4" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        커뮤니티
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown4">
+                        <li><a class="dropdown-item" href="#">공지사항</a></li>
+                        <li><a class="dropdown-item" href="#">자유게시판</a></li>
+                        <li><a class="dropdown-item" href="#">도서관 일정 안내</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <!-- 로그인 버튼을 오른쪽 끝으로 고정 -->
+            <button class="btn btn-outline-secondary ms-auto" id="loginBtn">로그인</button>
+        </div>
+    </div>
+</nav>
+
+<!-- MyLibrary 기능 버튼 및 내용 -->
+<div class="mylibrary-container">
+    <!-- 왼쪽 기능 버튼 -->
+    <div class="mylibrary-nav">
+        <a href="#">공지사항</a>
+        <a href="#">자유게시판</a>
+        <a href="#">도서관일정</a>
+    </div>
+
+    <!-- 가운데 비워진 공간 -->
+    <div class="mylibrary-main">
+        <!-- 달력 표시 -->
+        <div class="calendar">
+            <!-- 년월 표시 -->
+            <div class="calendar-header">
+                <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                <span class="month-text" id="monthText"></span>
+                <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+
+            <table id="calendarTable">
+                <thead>
+                <tr>
+                    <th>일</th>
+                    <th>월</th>
+                    <th>화</th>
+                    <th>수</th>
+                    <th>목</th>
+                    <th>금</th>
+                    <th>토</th>
+                </tr>
+                </thead>
+                <tbody id="calendarBody">
+                <!-- 달력 날짜들이 여기에 삽입됩니다 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth(); // 0-based, January is 0
+
+    function generateCalendar(year, month) {
+        const monthText = document.getElementById('monthText');
+        monthText.textContent = `${year}년 ${month}월`;
+
+        const calendarBody = document.getElementById('calendarBody');
+        calendarBody.innerHTML = ''; // 기존 내용 삭제
+
+        const firstDay = new Date(year, month - 1, 1).getDay(); // 해당 월의 첫날
+        const daysInMonth = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날
+
+        let currentDate = 1;
+        let row = document.createElement('tr');
+
+        // 첫 번째 주 시작 전 빈 칸 추가
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('td');
+            row.appendChild(emptyCell);
+        }
+
+        // 날짜 추가
+        for (let i = firstDay; i < 7; i++) {
+            const cell = document.createElement('td');
+            cell.textContent = currentDate;
+            const today = new Date();
+            if (today.getFullYear() === year && today.getMonth() + 1 === month && today.getDate() === currentDate) {
+                cell.classList.add('highlight');
+            }
+            row.appendChild(cell);
+            currentDate++;
+        }
+        calendarBody.appendChild(row);
+
+        // 나머지 주 추가
+        while (currentDate <= daysInMonth) {
+            row = document.createElement('tr');
+            for (let i = 0; i < 7; i++) {
+                if (currentDate <= daysInMonth) {
+                    const cell = document.createElement('td');
+                    cell.textContent = currentDate;
+                    const today = new Date();
+                    if (today.getFullYear() === year && today.getMonth() + 1 === month && today.getDate() === currentDate) {
+                        cell.classList.add('highlight');
+                    }
+                    row.appendChild(cell);
+                    currentDate++;
+                } else {
+                    row.appendChild(document.createElement('td'));
+                }
+            }
+            calendarBody.appendChild(row);
+        }
+    }
+
+    function changeMonth(direction) {
+        currentMonth += direction;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        } else if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        generateCalendar(currentYear, currentMonth + 1); // 월은 0-based, 1-based로 표시
+    }
+
+    // 현재 날짜로 달력 생성
+    generateCalendar(currentYear, currentMonth + 1);
+</script>
+</body>
+</html>

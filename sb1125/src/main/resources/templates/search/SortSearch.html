@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>분류 검색</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .container { display: flex; }
+    .column { min-width: 250px; margin-right: 20px; }
+    .item { padding: 8px; border-bottom: 1px solid #ccc; cursor: pointer; }
+    .item:hover { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+<h1>도서 분류 시스템</h1>
+<div class="container">
+  <div class="column" id="mainColumn">
+    <div class="item" onclick="loadSubCategory('general')">0. 총류</div>
+    <div class="item" onclick="loadSubCategory('philosophy')">100. 철학, 심리학</div>
+    <div class="item" onclick="loadSubCategory('religion')">200. 종교</div>
+    <div class="item" onclick="loadSubCategory('socialScience')">300. 사회과학</div>
+    <div class="item" onclick="loadSubCategory('language')">400. 언어</div>
+  </div>
+</div>
+
+<script>
+  const categories = {
+    general: {
+      중분류: ["010. 총류", "020. 도서관, 서지학", "030. 문헌정보학", "040. 백과사전"],
+      소분류: {
+        "010. 총류": ["001. 총류", "002. 지식", "003. 도서", "004. 시스템"],
+        "020. 도서관, 서지학": ["011. 일반서지", "012. 개인서지", "013. 특정저자 서지", "014. 서지학"],
+        "030. 문헌정보학": ["021. 도서관 정보센터", "022. 도서관 건물 및 설비", "023. 도서관 인사관리", "024. 정보 관리"],
+        "040. 백과사전": ["031. 동양어", "032. 영어", "033. 독일어", "034. 다국어"]
+      }
+    },
+    philosophy: {
+      중분류: ["110. 형이상학", "120. 인식론, 인과관계", "130. 비과학적 현상", "140. 철학사전"],
+      소분류: {
+        "110. 형이상학": ["111. 존재론", "112. 지식론", "113. 우주론", "114. 자연철학"],
+        "120. 인식론, 인과관계": ["121. 인식론", "122. 인과관계", "123. 결정론", "124. 비결정론"],
+        "130. 비과학적 현상": ["131. 통속심리학", "132. 비판철학", "133. 심리학", "134. 신비학"],
+        "140. 철학사전": ["141. 철학 이론", "142. 잡저", "143. 철학사", "144. 철학 용어"]
+      }
+    },
+    religion: {
+      중분류: ["210. 자연신학", "220. 성서", "230. 교리신학", "240. 종교 사전"],
+      소분류: {
+        "210. 자연신학": ["211. 신", "212. 신의 본질", "213. 창조", "214. 자연철학"],
+        "220. 성서": ["221. 구약성서", "222. 시가서", "223. 역사서", "224. 신약성서"],
+        "230. 교리신학": ["231. 신 (하나님)", "232. 예수 그리스도", "233. 인간론", "234. 교리"],
+        "240. 종교 사전": ["241. 그리스도교 철학", "242. 종교 잡저", "243. 종교 이론", "244. 종교 용어"]
+      }
+    },
+    socialScience: {
+      중분류: ["310. 사회과학 이론", "320. 경제학", "330. 정치학", "340. 사회학"],
+      소분류: {
+        "310. 사회과학 이론": ["311. 일반 이론", "312. 사회학", "313. 심리학", "314. 교육학"],
+        "320. 경제학": ["321. 미시경제학", "322. 거시경제학", "323. 경제정책", "324. 금융"],
+        "330. 정치학": ["331. 정치 이론", "332. 국제 정치", "333. 비교 정치", "334. 정치사"],
+        "340. 사회학": ["341. 사회 구조", "342. 문화", "343. 가족", "344. 노동"]
+      }
+    },
+    language: {
+      중분류: ["410. 일반언어학", "420. 영어", "430. 독일어", "440. 언어학 사전"],
+      소분류: {
+        "410. 일반언어학": ["411. 한국어", "412. 어원학", "413. 사전", "414. 문법"],
+        "420. 영어": ["421. 음운, 문자", "422. 어원", "423. 사전", "424. 문법"],
+        "430. 독일어": ["431. 음운, 문자", "432. 어원", "433. 사전", "434. 문법"],
+        "440. 언어학 사전": ["441. 철학 및 이론", "442. 잡저", "443. 어학 용어", "444. 비교 언어"]
+      }
+    }
+  };
+
+  function loadSubCategory(categoryKey) {
+    clearColumnsFrom(1);
+    createColumn(categories[categoryKey].중분류, (subCategory) => loadSmallCategory(categoryKey, subCategory));
+  }
+
+  function loadSmallCategory(categoryKey, subCategoryName) {
+    clearColumnsFrom(2);
+    createColumn(categories[categoryKey].소분류[subCategoryName]);
+  }
+
+  function createColumn(items, onClickCallback) {
+    const column = document.createElement('div');
+    column.classList.add('column');
+
+    items.forEach(name => {
+      const div = document.createElement('div');
+      div.classList.add('item');
+      div.textContent = name;
+      if (onClickCallback) {
+        div.onclick = () => onClickCallback(name);
+      }
+      column.appendChild(div);
+    });
+    document.querySelector('.container').appendChild(column);
+  }
+
+  function clearColumnsFrom(index) {
+    const cols = document.querySelectorAll('.column');
+    for (let i = index; i < cols.length; i++) {
+      cols[i].remove();
+    }
+  }
+</script>
+</body>
+</html>

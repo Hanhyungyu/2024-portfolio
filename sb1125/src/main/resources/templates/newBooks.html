@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신착도서</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h1 class="my-4">최근 등록된 책 목록</h1>
+
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>책 제목</th>
+      <th>저자</th>
+      <th>출판 연도</th>
+      <th>ISBN</th>
+      <th>등록 시간</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- 책 목록 출력 -->
+    <tr th:each="book : ${books}">
+      <td th:text="${book.title}"></td>
+      <td th:text="${book.author}"></td>
+      <td th:text="${book.publishedYear}"></td>
+      <td th:text="${book.isbn}"></td>
+      <td th:text="${#dates.format(book.regTime != null ? book.regTime : new java.util.Date(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

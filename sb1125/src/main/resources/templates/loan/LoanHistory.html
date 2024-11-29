@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>대출 기록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    table {
+      width: 80%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+    }
+
+    td {
+      font-size: 14px;
+      color: #555;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    td.book-title {
+      font-weight: bold;
+      color: #333;
+    }
+
+    td.date {
+      color: #666;
+    }
+
+    .extend-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .extend-btn:hover {
+      background-color: #45a049;
+    }
+
+    .disabled-btn {
+      background-color: #ccc;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+<h1 th:text="${username} + ' 님의 대출 기록'">대출 기록</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>책 제목</th>
+    <th>대출 날짜</th>
+    <th>반납 예정일</th>
+    <th>연장</th> <!-- 연장 버튼/상태 표시 -->
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="loan : ${loanList}">
+    <td class="book-title" th:text="${loan.book != null ? loan.book.title : '책 정보 없음'}">대출 도서</td>
+    <td class="date" th:text="${loan.loanDate}">대출 날짜</td>
+    <td class="date" th:text="${loan.returnDate}">반납 예정일</td>
+    <td>
+      <!-- 연장 버튼 또는 상태 표시 -->
+      <form th:if="${loan.extended == null || !loan.extended}" action="/LoanExtend" method="post">
+        <input type="hidden" name="loanId" th:value="${loan.loanId}">
+        <button type="submit" class="extend-btn">연장</button>
+      </form>
+      <span th:if="${loan.extended}" class="disabled-btn">연장 불가</span>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
